@@ -7,6 +7,7 @@ const postcss = require('postcss');
 const store = require('./store');
 const normalize = require('./utils/normalize');
 const processed = Symbol('wpe-processed')
+const mediaquery = require('css-mediaquery');
 
 module.exports = (options) => {
 
@@ -15,12 +16,9 @@ module.exports = (options) => {
         store.addMedia(name, css, options.path, '');
     }
 
-    return { 
-        postcssPlugin: "WpEditorPostCSS",
-        AtRule(atRule) {
-        if(atRule.name == 'editor' || atRule.name === 'editor-only') {
-          if (!atRule[processed]) {
-            const name = atRule.params ? atRule.params : 'default';
+    function processEditorBlock(atRule, removeFromMain = false) {
+        if (!atRule[processed]) {
+            const name = atRule.name == 'media' ? 'default' : (atRule.params ? atRule.params : 'default');
             
             if(atRule.nodes.length > 0 && atRule.nodes[0].type == 'decl') {
                 const ghostNode = new postcss.Rule({selector: atRule.parent.selector})
@@ -31,13 +29,30 @@ module.exports = (options) => {
 
             } else {
                 addToStore(name, atRule.clone());
-                if(atRule.name === 'editor') {
+                if(atRule.name !== 'editor-only' && !removeFromMain) {
                     atRule.replaceWith(atRule.nodes);
                 }
                 atRule.remove();
             }
             atRule[processed] = true
           }
+    }
+
+    return { 
+        postcssPlugin: "WpEditorPostCSS",
+        AtRule(atRule) {
+
+        if(atRule.name == 'media') {
+            const ast = mediaquery.parse(atRule.params);
+            if(ast.length == 1 && ast[0].expressions[0].feature == 'wp-editor') {
+                processEditorBlock(atRule, true);
+            } else if(mediaquery.match(atRule.params, { type: 'screen', 'wp-editor': undefined })) {
+                processEditorBlock(atRule);
+            }
+        }
+
+        if(atRule.name == 'editor' || atRule.name === 'editor-only') {
+            processEditorBlock(atRule);
         }
         
       }}

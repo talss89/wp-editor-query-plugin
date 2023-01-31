@@ -21,7 +21,8 @@
     "loader-utils": "^2.0.0",
     "postcss": "^8.0.0",
     "webpack": "^5.21.2",
-    "webpack-sources": "^2.2.0"
+    "webpack-sources": "^2.2.0",
+    "css-mediaquery": "^0.1.2"
   },
   "devDependencies": {
     "chai": "^4.2.0",
