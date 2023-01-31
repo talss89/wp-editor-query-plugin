@@ -1,5 +1,70 @@
 # WP Editor Query Plugin for Webpack 5
 
+This Webpack plugin allows you to define sections of CSS to be loaded in the Gutenberg WordPress editor by means of a separate CSS asset.
+
+In your main CSS bundle, use the following syntax to have the plugin export styles to `css/default.editor.css`:
+
+```CSS
+@media all, (wp-editor) {
+
+    /* Style is in both main and editor CSS */
+
+    .your-styles-here {
+        color: blue;
+    }
+}
+
+@media (wp-editor) {
+
+    /* Style is ONLY in editor CSS */
+
+    .your-styles-here {
+        color: blue;
+    }
+}
+```
+
+There is also an alternative syntax which is non-standard and doesn't play well with linters. **When in doubt, use the first `@media` syntax.**
+
+```CSS
+@editor {
+
+    /* Style is in both main and editor CSS */
+
+    .your-styles-here {
+        color: blue;
+    }
+}
+
+@editor-only {
+
+    /* Style is ONLY in editor CSS */
+
+     .your-styles-here {
+        color: blue;
+    }
+}
+
+.your-styles-here {
+    color: blue;
+    /* Following property is in both main and editor CSS */
+    @editor { font-weight: bold; }
+}
+
+@editor other-stylesheet {
+
+    /* Style is in both main and editor CSS, */
+    /* But output to the module:
+    /* css/other-stylesheet.editor.css */
+
+    .your-styles-here {
+        color: blue;
+    }
+}
+```
+
+
+
 This is a heavily modified https://github.com/SassNinja/media-query-plugin for WordPress FSE development.
 
 This is quick hack of the above plugin which will extract `@editor` at-rules and output them as CSS assets.
@@ -45,7 +110,6 @@ export default async (app) => {
   app.build.rules.css.setUse(items => ['precss', 'css', 'wp-editor', 'postcss'])
 
   app
-    // .use(new WpEditorQueryPlugin())
     .entry({
       app: ['@scripts/app', '@styles/app'],
       editor: ['@scripts/editor', '@styles/editor'],
