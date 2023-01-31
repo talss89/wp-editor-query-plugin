@@ -22,7 +22,7 @@ module.exports = postcss.plugin('WpEditorPostCSS', options => {
         css.walkAtRules('editor', atRule => {
             const name = atRule.params ? atRule.params : 'default';
 
-            addToStore(name, atRule);
+            addToStore(name, atRule.clone());
             atRule.replaceWith(atRule.nodes);
             atRule.remove();
         });
@@ -30,7 +30,7 @@ module.exports = postcss.plugin('WpEditorPostCSS', options => {
         css.walkAtRules('editor-only', atRule => {
             const name = atRule.params ? atRule.params : 'default';
 
-            addToStore(name, atRule);
+            addToStore(name, atRule.clone());
             atRule.remove();
         });
     };
