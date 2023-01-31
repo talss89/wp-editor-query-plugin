@@ -1,6 +1,8 @@
-# WP Editor Query Plugin
+# WP Editor Query Plugin for Webpack 5
 
-This is quick hack which will extract `@editor` at-rules and output them as CSS assets.
+This is a heavily modified https://github.com/SassNinja/media-query-plugin for WordPress FSE development.
+
+This is quick hack of the above plugin which will extract `@editor` at-rules and output them as CSS assets.
 
 Developed for the Sage 10 / Bud workflow.
 
@@ -37,14 +39,7 @@ export default async (app) => {
 
   app.build.setItem(`wp-editor`, {
     loader: `editor-extract-loader`,
-    options: {
-      include: [
-        'app'
-    ],
-    queries: {
-        'print, screen and (min-width: 75em)': 'desktop'
-    }
-    },
+    options: {},
   })
 
   app.build.rules.css.setUse(items => ['precss', 'css', 'wp-editor', 'postcss'])
