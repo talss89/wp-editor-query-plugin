@@ -75,22 +75,6 @@ Now decide on how you wish to assign your editor styles. There are two approache
 2. **Adopt** - Adopt an entire entrypoint, and ensure that the styles are always emitted as CSS
 
 You may combine the two approaches, but marking rules in an adopted file is not useful and may result in unexpected behaviour. Marked styles will override adopted styles.
-
-## Adopting Entire Stylesheets
-
-Simply pass the name of your entrypoint as a loader option:
-
-```JS
-  app.build.setItem(`wp-editor`, {
-    loader: `editor-extract-loader`,
-    options: {
-      adopt: ['editor']
-    },
-  })
-```
-
-In this example, any styles included in your `editor` entrypoint will now be emitted to `css/default.editor.css`.
-
 ## Marking Styles
 
 To selectively mark styles to be extracted to your editor stylesheet from another entrypoint, ensure they're passed to the plugin via rule options:
@@ -170,6 +154,24 @@ You may also use an alternative syntax, but this is not true CSS, and relies on 
     }
 }
 ```
+
+## Adopting Entire Stylesheets
+
+This is a more 'brute-force' approach to editor styles, but can work well, especially if you're splitting stylesheets into modules and using `@import`.
+
+Simply pass the name of your entrypoint as a loader option:
+
+```JS
+  app.build.setItem(`wp-editor`, {
+    loader: `editor-extract-loader`,
+    options: {
+      adopt: ['editor']
+    },
+  })
+```
+
+In this example, any styles included in your `editor` entrypoint will now be emitted to `css/default.editor.css`.
+
 
 # Contributing
 
