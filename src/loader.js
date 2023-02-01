@@ -35,7 +35,7 @@ module.exports = function(source) {
         isIncluded = true;
     }
 
-
+    store.resetMedia();
 
     // check if current file should be affected
     if (
