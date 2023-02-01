@@ -58,7 +58,7 @@ export default async (app) => {
 
 Be sure to update your `options.include` and / or `options.adopt` parameters above.
 
-Remember, you will also need to load the resulting CSS asset in WordPress via `add_editor_style`. An example of this in [Sage 10][https://sage.roots.io] is below:
+Remember, you will also need to load the resulting CSS asset in WordPress via `add_editor_style`. An example of this in [Sage 10](https://sage.roots.io) is below:
 
 ```PHP
 add_action('after_setup_theme', function () {
