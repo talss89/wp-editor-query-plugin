@@ -35,14 +35,26 @@ module.exports = function(source) {
         isIncluded = true;
     }
 
-    // return (either modified or not) source
-    if (isIncluded === true) {
-        postcss([ plugin(options) ])
-            .process(source, { from: options.basename })
-            .then(result => {
-                cb(null, result.toString())
-            });
-    } else {
+
+
+    // check if current file should be affected
+    if (
+        (options.adopt instanceof Array && options.adopt.indexOf(options.basename) !== -1) ||
+        (options.adopt instanceof RegExp && options.basename.match(options.adopt))
+    ) {
+        store.addMedia('default', source, options.path);
         cb(null, source);
+    } else {
+
+        // return (either modified or not) source
+        if (isIncluded === true) {
+            postcss([ plugin(options) ])
+                .process(source, { from: options.basename })
+                .then(result => {
+                    cb(null, result.toString())
+                });
+        } else {
+            cb(null, source);
+        }
     }
 };
