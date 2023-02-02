@@ -45,6 +45,10 @@ module.exports = class WpEditorQueryPlugin {
             store.resetMedia();
         });
 
+        compiler.hooks.beforeRun.tap(pluginName, () => {
+            store.resetMedia();
+        });
+
         // if a filename has become invalid (watch mode)
         // remove all related data from store
         compiler.hooks.invalid.tap(pluginName, (fileName, changeTime) => {

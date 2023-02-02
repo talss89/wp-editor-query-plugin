@@ -35,8 +35,6 @@ module.exports = function(source) {
         isIncluded = true;
     }
 
-    store.resetMedia();
-
     // check if current file should be affected
     if (
         (options.adopt instanceof Array && options.adopt.indexOf(options.basename) !== -1) ||
