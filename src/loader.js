@@ -41,7 +41,7 @@ module.exports = function(source) {
         (options.adopt instanceof RegExp && options.basename.match(options.adopt))
     ) {
         store.addMedia('default', source, options.path);
-        cb(null, source);
+        cb(null, ''); // If we're adopting the entire file don't process the content, just emit it.
     } else {
 
         // return (either modified or not) source
