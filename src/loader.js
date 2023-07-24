@@ -10,7 +10,8 @@ const store = require('./store');
 const plugin = require('./postcss');
 
 module.exports = function(source) {
-
+    this.cacheable(false);
+    
     // make loader async
     const cb = this.async();
 
