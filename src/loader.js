@@ -8,14 +8,14 @@ const { extract, remove } = require("./postcss");
 /**
  * wp-editor media query loader
  */
-function loader(source) {
+async function loader(source) {
   const callback = this.async();
   const options = getOptions(this);
   const parsed = parse(this.resourcePath);
 
   // bail early if the source does not contain any queries
   // or the module is not slated for inclusion
-  if (!containsQuery(source) || isIncluded(parsed.name, options.include))
+  if (!containsQuery(source) || !isIncluded(parsed.name, options.include))
     return callback(null, source);
 
   postcss([extract])
