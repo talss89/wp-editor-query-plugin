@@ -1,6 +1,6 @@
 # WP Editor Query Plugin for Webpack 5
 
-*This is a Webpack 5 plugin, but I mainly use it with [Bud](https://bud.js.org). Examples use `bud`, but it should be usable in plain webpack too.*
+_This is a Webpack 5 plugin, but I mainly use it with [Bud](https://bud.js.org). Examples use `bud`, but it should be usable in plain webpack too._
 
 ## The problem:
 
@@ -18,7 +18,7 @@ The plugin will emit a `css/default.editor.css` file to your build directory, co
 
 # Getting Started
 
-*This plugin is pre-alpha, so is not published on NPM yet.*
+_This plugin is pre-alpha, so is not published on NPM yet._
 
 1. Add the plugin to your `devDependencies` - eg. `yarn add https://github.com/talss89/wp-editor-query-plugin --dev`
 2. Load the plugin
@@ -29,13 +29,14 @@ The plugin will emit a `css/default.editor.css` file to your build directory, co
 Until this plugin is wrapped up into a real `bud` plugin, there's a little bit of setup required:
 
 In your `bud.config.js` file:
+
 ```JS
 import WpEditorQueryPlugin from 'wp-editor-query-plugin';
 
 export default async (app) => {
 
   await app.extensions.add(new WpEditorQueryPlugin())
-  
+
   app.build.setLoader(
     `editor-extract-loader`,
     WpEditorQueryPlugin.loader
@@ -50,8 +51,8 @@ export default async (app) => {
   })
 
   app.build.rules.css.setUse(items => ['precss', 'css', 'wp-editor', 'postcss'])
-  
-  /* 
+
+  /*
     ... Your configuration continues  ...
   */
 ```
@@ -75,6 +76,7 @@ Now decide on how you wish to assign your editor styles. There are two approache
 2. **Adopt** - Adopt an entire entrypoint, and ensure that the styles are always emitted as CSS
 
 You may combine the two approaches, but marking rules in an adopted file is not useful and may result in unexpected behaviour. Marked styles will override adopted styles.
+
 ## Marking Styles
 
 To selectively mark styles to be extracted to your editor stylesheet from another entrypoint, ensure they're passed to the plugin via rule options:
@@ -171,7 +173,6 @@ Simply pass the name of your entrypoint as a loader option:
 ```
 
 In this example, any styles included in your `editor` entrypoint will now be emitted to `css/default.editor.css`.
-
 
 # Contributing
 

@@ -1,58 +1,58 @@
+const { join, parse } = require("path");
+
+const { getOptions } = require("loader-utils");
+const postcss = require("postcss");
+
+const { extract, remove } = require("./postcss");
+
 /**
- * The loader component is supposed to extract the media CSS from the source chunks.
- * To do this it uses a custom PostCSS plugin. 
- * In the course of this the original media CSS gets removed.
+ * wp-editor media query loader
  */
+function loader(source) {
+  const callback = this.async();
+  const options = getOptions(this);
+  const parsed = parse(this.resourcePath);
 
-const { getOptions, interpolateName } = require('loader-utils');
-const postcss = require('postcss');
-const store = require('./store');
-const plugin = require('./postcss');
+  // bail early if the source does not contain any queries
+  // or the module is not slated for inclusion
+  if (!containsQuery(source) || isIncluded(parsed.name, options.include))
+    return callback(null, source);
 
-module.exports = function(source) {
+  postcss([extract])
+    .process(source, { from: parsed.base })
+    /**
+     * Extract the editor specific css from the source file
+     * and emit it as a separate file
+     */
+    .then((extracted) => {
+      const emitPath = join(`editor`, parsed.base);
+      this.emitFile(emitPath, extracted.toString(), false);
 
-    // make loader async
-    const cb = this.async();
+      /**
+       * Remove the editor specific css from the source file
+       * and return the result
+       */
+      postcss([remove])
+        .process(source, { from: parsed.base })
+        .then((result) => {
+          callback(null, result.toString());
+        });
+    });
+}
 
-    // merge loader's options with plugin's options from store
-    const options = Object.assign(store.options, getOptions(this));
+/**
+ * Check if the source contains any queries
+ */
+const containsQuery = (source) =>
+  [
+    source.match(/@editor/),
+    source.match(/@editor-only/),
+    source.match(/@media.*\(?wp-editor\)?/),
+  ].some(Boolean);
 
-    // basename gets used later to build the key for media query store
-    options.basename = interpolateName(this, '[name]', {});
+/**
+ * Check if the module is slated for inclusion
+ */
+const isIncluded = (name, included = []) => included.includes(name);
 
-    // path gets used later to invalidate store (watch mode)
-    // (don't use options.filename to avoid name conflicts)
-    options.path = interpolateName(this, '[path][name].[ext]', {});
-
-    let isIncluded = false;
-
-    // check if current file should be affected
-    if (options.include instanceof Array && options.include.indexOf(options.basename) !== -1) {
-        isIncluded = true;
-    } else if (options.include instanceof RegExp && options.basename.match(options.include)) {
-        isIncluded = true;
-    } else if (options.include === true) {
-        isIncluded = true;
-    }
-
-    // check if current file should be affected
-    if (
-        (options.adopt instanceof Array && options.adopt.indexOf(options.basename) !== -1) ||
-        (options.adopt instanceof RegExp && options.basename.match(options.adopt))
-    ) {
-        store.addMedia('default', source, options.path);
-        cb(null, ''); // If we're adopting the entire file don't process the content, just emit it.
-    } else {
-
-        // return (either modified or not) source
-        if (isIncluded === true) {
-            postcss([ plugin(options) ])
-                .process(source, { from: options.basename })
-                .then(result => {
-                    cb(null, result.toString())
-                });
-        } else {
-            cb(null, source);
-        }
-    }
-};
+module.exports = loader;
