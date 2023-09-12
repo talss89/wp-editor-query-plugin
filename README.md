@@ -1,3 +1,5 @@
+> **:warning: Deprecated. Please use https://github.com/talss89/bud-wp-editor-query**
+
 # WP Editor Query Plugin for Webpack 5
 
 *This is a Webpack 5 plugin, but I mainly use it with [Bud](https://bud.js.org). Examples use `bud`, but it should be usable in plain webpack too.*
