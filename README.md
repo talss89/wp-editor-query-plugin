@@ -1,4 +1,5 @@
-> **:warning: Deprecated. Please use https://github.com/talss89/bud-wp-editor-query**
+> # **:warning: Deprecated**
+> Please use https://github.com/talss89/bud-wp-editor-query
 
 # WP Editor Query Plugin for Webpack 5
 
